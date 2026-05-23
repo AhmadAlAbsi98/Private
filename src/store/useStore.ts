@@ -1,8 +1,12 @@
 import { create } from 'zustand'
 import type { Object3D } from 'three'
+import type { FlyTo } from '../scene/useCameraRig'
+
+export type CameraMode = 'idle' | 'flying' | 'detail'
 
 // Shared experience state. selectedPeak / selectedCamp are extended by later
-// build steps; hover state drives the marker visuals and the camera parallax.
+// build steps; hover state drives the marker visuals and camera parallax;
+// cameraMode + flyTo route all navigation through the shared camera rig.
 export interface ExperienceState {
   selectedPeak: string | null
   selectedCamp: string | null
@@ -12,14 +16,15 @@ export interface ExperienceState {
   // read its live world position each frame (it rotates with the globe).
   hoveredObject: Object3D | null
 
-  // Where the shared camera rig should look. Future fly-to transitions
-  // animate toward this target via GSAP.
-  cameraTarget: [number, number, number]
+  cameraMode: CameraMode
+  // Published by the camera rig. Every camera move must go through this.
+  flyTo: FlyTo | null
 
   setSelectedPeak: (id: string | null) => void
   setSelectedCamp: (id: string | null) => void
   setHovered: (id: string | null, object: Object3D | null) => void
-  setCameraTarget: (target: [number, number, number]) => void
+  setCameraMode: (mode: CameraMode) => void
+  setFlyTo: (flyTo: FlyTo | null) => void
 }
 
 export const useStore = create<ExperienceState>((set) => ({
@@ -29,10 +34,12 @@ export const useStore = create<ExperienceState>((set) => ({
   hoveredPeak: null,
   hoveredObject: null,
 
-  cameraTarget: [0, 0, 0],
+  cameraMode: 'idle',
+  flyTo: null,
 
   setSelectedPeak: (selectedPeak) => set({ selectedPeak }),
   setSelectedCamp: (selectedCamp) => set({ selectedCamp }),
   setHovered: (hoveredPeak, hoveredObject) => set({ hoveredPeak, hoveredObject }),
-  setCameraTarget: (cameraTarget) => set({ cameraTarget }),
+  setCameraMode: (cameraMode) => set({ cameraMode }),
+  setFlyTo: (flyTo) => set({ flyTo }),
 }))

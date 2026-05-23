@@ -6,6 +6,7 @@ import {
   type Group,
   type Mesh,
   type MeshStandardMaterial,
+  Vector3,
 } from 'three'
 import type { Peak } from '../data/peaks'
 import { useStore } from '../store/useStore'
@@ -68,6 +69,29 @@ export function PeakMarker({ peak, position, phase }: Props) {
     e.stopPropagation()
     setSelectedPeak(peak.id)
     console.log('[14 Peaks] selected peak:', peak.name, `${peak.height} m`)
+
+    // Clear hover so the label/parallax don't fight the flight.
+    setHovered(false)
+    setHover(null, null)
+    document.body.style.cursor = 'auto'
+
+    // Dive from the globe view toward the peak: end just off the surface along
+    // its normal, with a small tangential offset for a dynamic angle.
+    const wp = new Vector3()
+    if (group.current) group.current.getWorldPosition(wp)
+    const normal = wp.clone().normalize()
+    const tangent = new Vector3().crossVectors(normal, new Vector3(0, 1, 0)).normalize()
+    const camPos = wp
+      .clone()
+      .add(normal.clone().multiplyScalar(1.5))
+      .add(tangent.multiplyScalar(0.7))
+      .add(new Vector3(0, 0.4, 0))
+
+    useStore.getState().flyTo?.({
+      position: camPos.toArray(),
+      lookAt: wp.toArray(),
+      settle: 'detail',
+    })
   }
 
   return (
