@@ -2,6 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { CanvasTexture, type Group, SRGBColorSpace } from 'three'
 import { PEAKS } from '../data/peaks'
+import { useStore } from '../store/useStore'
 import { latLngToVector3 } from '../utils/coords'
 import { Atmosphere } from './Atmosphere'
 import { PeakMarker } from './PeakMarker'
@@ -71,9 +72,12 @@ export function Globe() {
     [],
   )
 
-  // Slow idle auto-rotation — no interactions yet, so the globe always drifts.
+  // Slow idle auto-rotation; pauses while the camera flies or sits in detail
+  // so the targeted peak stays put.
   useFrame((_, delta) => {
-    if (spin.current) spin.current.rotation.y += delta * 0.05
+    if (spin.current && useStore.getState().cameraMode === 'idle') {
+      spin.current.rotation.y += delta * 0.05
+    }
   })
 
   return (
