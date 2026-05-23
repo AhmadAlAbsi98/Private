@@ -92,7 +92,12 @@ export function Globe() {
         </mesh>
 
         {markers.map((m) => (
-          <PeakMarker key={m.peak.id} position={m.position} phase={m.phase} />
+          <PeakMarker
+            key={m.peak.id}
+            peak={m.peak}
+            position={m.position}
+            phase={m.phase}
+          />
         ))}
       </group>
 
