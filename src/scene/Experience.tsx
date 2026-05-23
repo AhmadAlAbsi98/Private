@@ -4,9 +4,10 @@ import { Suspense } from 'react'
 import { ACESFilmicToneMapping } from 'three'
 import { CameraRig } from './CameraRig'
 import { Effects } from './Effects'
-import { PlaceholderObject } from './PlaceholderObject'
+import { Globe } from './Globe'
 
-// Step 1: dark cinematic canvas + lighting only. No globe, no peaks yet.
+// Step 2: dark cinematic canvas + the stylized globe with 14 glowing peak
+// markers. No interactions yet.
 export function Experience() {
   return (
     <Canvas
@@ -63,7 +64,7 @@ export function Experience() {
           />
         </Environment>
 
-        <PlaceholderObject />
+        <Globe />
         <CameraRig />
         <Effects />
       </Suspense>
