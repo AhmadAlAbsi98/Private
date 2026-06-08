@@ -1,3 +1,15 @@
+export interface Camp {
+  id: string
+  name: string
+  /**
+   * Position relative to the peak detail scene's local frame: x/z lie in the
+   * terrain plane (units roughly equal to one tile of the massif, ±3), y is a
+   * nominal elevation hint. The detail scene snaps each camp onto the live
+   * heightmap so the node sits exactly on the surface.
+   */
+  position: [number, number, number]
+}
+
 export interface Peak {
   id: string
   name: string
@@ -8,6 +20,8 @@ export interface Peak {
   lng: number
   /** One-line documentary blurb shown in later detail views. */
   summary: string
+  /** Camp placements along the standard route, if illustrated for this peak. */
+  camps?: Camp[]
 }
 
 // The 14 eight-thousanders, sourced from PROJECT.md. Coordinates are summit
@@ -21,6 +35,23 @@ export const PEAKS: Peak[] = [
     lat: 27.9881,
     lng: 86.925,
     summary: 'The highest point on Earth, first summited in 1953 by Hillary and Tenzing.',
+    // Standard South Col route, sketched in scene-local units along the
+    // approach ridge. The detail scene snaps y onto the live heightmap so
+    // these only need to feel right in plan view.
+    camps: [
+      // ILLUSTRATIVE — scene-relative placements, not real-world coordinates.
+      { id: 'everest-bc', name: 'Base Camp', position: [-2.1, 0.05, 1.9] },
+      // ILLUSTRATIVE
+      { id: 'everest-c1', name: 'Camp 1', position: [-1.25, 0.4, 1.15] },
+      // ILLUSTRATIVE
+      { id: 'everest-c2', name: 'Camp 2', position: [-0.55, 0.8, 0.55] },
+      // ILLUSTRATIVE
+      { id: 'everest-c3', name: 'Camp 3', position: [0.0, 1.25, 0.2] },
+      // ILLUSTRATIVE
+      { id: 'everest-c4', name: 'Camp 4', position: [0.25, 1.7, -0.1] },
+      // ILLUSTRATIVE
+      { id: 'everest-summit', name: 'Summit', position: [0.0, 2.2, 0.0] },
+    ],
   },
   {
     id: 'k2',

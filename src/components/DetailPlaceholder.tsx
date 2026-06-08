@@ -81,17 +81,6 @@ export function DetailPlaceholder() {
           >
             {peak.summary}
           </p>
-          <div
-            style={{
-              marginTop: 14,
-              fontSize: 12,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: '#5e718f',
-            }}
-          >
-            Detail scene — coming soon
-          </div>
 
           <button
             type="button"
