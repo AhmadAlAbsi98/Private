@@ -2,12 +2,17 @@ import { Canvas } from '@react-three/fiber'
 import { Environment, Lightformer } from '@react-three/drei'
 import { Suspense } from 'react'
 import { ACESFilmicToneMapping } from 'three'
+import { PEAKS } from '../data/peaks'
+import { useStore } from '../store/useStore'
 import { CameraRig } from './CameraRig'
 import { Effects } from './Effects'
 import { Globe } from './Globe'
+import { PeakDetail } from './PeakDetail'
 
-// Step 2: dark cinematic canvas + the stylized globe with 14 glowing peak
-// markers. No interactions yet.
+// Step 5: idle / flying renders the globe; detail mode renders the reusable
+// peak detail scene (Everest is the only peak with camp data for now).
+const DETAIL_PEAK = PEAKS.find((p) => p.id === 'everest')!
+
 export function Experience() {
   return (
     <Canvas
@@ -64,10 +69,15 @@ export function Experience() {
           />
         </Environment>
 
-        <Globe />
+        <SceneBody />
         <CameraRig />
         <Effects />
       </Suspense>
     </Canvas>
   )
+}
+
+function SceneBody() {
+  const mode = useStore((s) => s.cameraMode)
+  return mode === 'detail' ? <PeakDetail peak={DETAIL_PEAK} /> : <Globe />
 }

@@ -6,7 +6,6 @@ import {
   type Group,
   type Mesh,
   type MeshStandardMaterial,
-  Vector3,
 } from 'three'
 import type { Peak } from '../data/peaks'
 import { useStore } from '../store/useStore'
@@ -75,21 +74,12 @@ export function PeakMarker({ peak, position, phase }: Props) {
     setHover(null, null)
     document.body.style.cursor = 'auto'
 
-    // Dive from the globe view toward the peak: end just off the surface along
-    // its normal, with a small tangential offset for a dynamic angle.
-    const wp = new Vector3()
-    if (group.current) group.current.getWorldPosition(wp)
-    const normal = wp.clone().normalize()
-    const tangent = new Vector3().crossVectors(normal, new Vector3(0, 1, 0)).normalize()
-    const camPos = wp
-      .clone()
-      .add(normal.clone().multiplyScalar(1.5))
-      .add(tangent.multiplyScalar(0.7))
-      .add(new Vector3(0, 0.4, 0))
-
+    // Dive toward the peak detail stage. The terrain is rendered at the origin
+    // in detail mode, so we frame that massif from a fixed 3/4 angle and let
+    // the rig's detail-mode orbit take over once we settle.
     useStore.getState().flyTo?.({
-      position: camPos.toArray(),
-      lookAt: wp.toArray(),
+      position: [3.0, 1.9, 3.8],
+      lookAt: [0, 0.95, 0],
       settle: 'detail',
     })
   }
